@@ -1,9 +1,14 @@
+/**
+  These are the individual waves of the ocean.
+**/
 class Wave {
   public float[] wave;
   public float vel;
   public float maxVel;
    float accel;
   public float accelDecreaseRate;
+  public float life;
+  public static final float maxLife = 100;
   
   public Wave(int size, float vel, float maxVel, float accel, float accelDecreaseRate) {
     this.wave = new float[size];
@@ -11,6 +16,7 @@ class Wave {
     this.maxVel = maxVel;
     this.accel = accel;
     this.accelDecreaseRate = accelDecreaseRate;
+    this.life = this.maxLife;
   }
   
   public void generateSinWave(float amp, float offset) {
@@ -36,10 +42,15 @@ class Wave {
     for(int i = 0; i < this.wave.length; i++) { 
       this.wave[i] += this.vel;
     }
+    
+    this.life -= random(2);
+    this.life = max(this.life, 0);
   }
   
   public void render() {
-    stroke(0);
+    int alpha = (int) (255 * life / maxLife);
+    System.out.println("alpha is " + alpha);
+    stroke(0, alpha);
     strokeWeight(4);
     for(int i = 0; i < wave.length; i++) {
       float x = i;

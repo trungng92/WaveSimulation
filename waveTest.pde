@@ -2,8 +2,8 @@ import java.util.Iterator;
 // dying waves
 // gaussian distribution for wave distance
 // drawing waves?
-float[] outputWave;
 
+OutputWave outputWave;
 ArrayList<Wave> waves;
 
 void setup() {
@@ -17,28 +17,28 @@ void setup() {
   for(Wave wave : waves) {
     wave.generateSinWave(random(20, 40), random(2 * PI));
   }
+  
+  outputWave = new OutputWave(width);
 }
 
 void draw() {
-  background(255);
+  background(color(204, 153, 0));
   for(Wave wave : waves) {
     wave.update();
     wave.render();
   }
   
+  outputWave.calculateOutputWave(waves);
+  outputWave.update();
+  outputWave.render();
+  
   // check if we need to remove any waves
   for(Iterator<Wave> iter = waves.iterator(); iter.hasNext();) {
     Wave waveToCheck = iter.next();
-    if(waveToCheck.wave[0] < 0) {
+    if(waveToCheck.wave[0] < 0 || waveToCheck.life <= 0) {
       iter.remove();
       System.out.println("removed a wave");
     }
-  }
-  if(waves.size() > 0) {
-    outputWave = calcOutputWave(waves);
-    stroke(255, 0, 0);
-    strokeWeight(2);
-    drawWave(outputWave);
   }
 }
 
@@ -50,22 +50,6 @@ float[] calcOutputWave(ArrayList<Wave> waves) {
       max = max(max, waves.get(j).wave[i]);
     }
     outputWave[i] = max;
-  }
-  return outputWave;
-}
-
-void drawWave(float[] wave) {
-  for(int i = 0; i < wave.length; i++) {
-    float x = i;
-    float y = wave[i];
-    point(x, y);
-  }
-}
-
-float[] addWaves(float[] wave1, float[] wave2) {
-  float[] outputWave = new float[wave1.length];
-  for(int i = 0; i < wave1.length; i++) {
-    outputWave[i] = wave1[i] + wave2[i]; 
   }
   return outputWave;
 }
