@@ -2,6 +2,7 @@ import java.util.Iterator;
 // dying waves
 // gaussian distribution for wave distance
 // drawing waves?
+// test commit
 float[] outputWave;
 
 ArrayList<Wave> waves;
