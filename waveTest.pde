@@ -11,8 +11,8 @@ void setup() {
   frameRate(15);
   
   waves = new ArrayList<Wave>();
-  waves.add(new Wave(width, random(.5), 5, random(.25, .5), random(.005, .01)));
-  waves.add(new Wave(width, random(.5), 5, random(.25, .5), random(.005, .01)));
+  waves.add(new Wave(width, randGauss(1.5, .5), 5, randGauss(.75, .25), abs(randGauss(.02, .001))));
+  waves.add(new Wave(width, randGauss(1.5, .5), 5, randGauss(.75, .25), abs(randGauss(.02, .001))));
   
   for(Wave wave : waves) {
     wave.generateSinWave(random(20, 40), random(2 * PI));
@@ -71,8 +71,12 @@ float[] addWaves(float[] wave1, float[] wave2) {
 }
 
 void mouseReleased() {
-  Wave wave = new Wave(width, random(.5), 5, random(.25, .5), random(.005, .01));
+  Wave wave = new Wave(width, randGauss(1.5, .5), 5, randGauss(.75, .25), abs(randGauss(.02, .001)));
   wave.generateSinWave(random(20, 40), random(2 * PI));
   
   waves.add(wave);
+}
+
+float randGauss(float mean, float sd) {
+   return (randomGaussian() * sd) + mean;
 }
