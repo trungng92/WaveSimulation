@@ -10,15 +10,14 @@ import java.util.Iterator;
 // when a wave dies, the crash stays there, but still fades
 // sin waves should shift by approximately pi between each wave
 
-OutputWave outputWave;
 ArrayList<Wave> waves;
 
 void setup() {
   size(400, 700);
-//  frameRate(60);
+//  frameRate(15);
+//  loadPixels();
   
   waves = new ArrayList<Wave>();
-  outputWave = new OutputWave(width, waves);
 }
 
 void draw() {
@@ -28,14 +27,10 @@ void draw() {
     wave.render();
   }
   
-//  outputWave.calculateOutputWave();
-//  outputWave.update();
-//  outputWave.render();
-  
   // check if we need to remove any waves
   for(Iterator<Wave> iter = waves.iterator(); iter.hasNext();) {
     Wave waveToCheck = iter.next();
-    if(waveToCheck.wavePoints[0].y < 0 || waveToCheck.life <= 0) {
+    if(waveToCheck.wavePoints.get(0).y < 0 || waveToCheck.life <= 0) {
       iter.remove();
       System.out.println("removed a wave");
     }
