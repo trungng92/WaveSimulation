@@ -16,7 +16,7 @@ class Wavelet {
   public Wavelet(float x) {
     this.x = x;
     this.y = 0;
-    this.circleDiam = random(90, 150);
+    this.circleDiam = random(40, 80);
     this.waveColor = color(0, random(50, 150), random(200, 255));
     this.alpha = 255;
   }

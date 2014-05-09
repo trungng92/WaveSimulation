@@ -17,13 +17,13 @@ ArrayList<Wave> waves;
 void setup() {
   size(400, 700);
 //  frameRate(15);
-//  loadPixels();
+  loadPixels();
   
   waves = new ArrayList<Wave>();
 }
 
 void draw() {
-  background(color(204, 153, 0));
+  loadPixelOcean();
   for(Wave wave : waves) {
     wave.update();
     wave.render();
@@ -52,4 +52,44 @@ void mouseReleased() {
 
 float randGauss(float mean, float sd) {
    return (randomGaussian() * sd) + mean;
+}
+
+void loadPixelOcean() {
+  background(color(204, 153, 0));
+  float startingG = 50;
+  float startingB = 50;
+  float currentG = startingG;
+  float currentB = startingB;
+  pixels[0] = color(0, currentG, currentB);
+  int numPixels = width * 300;
+  
+  // set the first line of pixels
+  for(int i = 1; i < width + 1; i++) {
+    currentG += randGauss(-127 / numPixels, .5);
+//    System.out.println(currentG);
+    currentG = max(0, currentG);
+    currentG = min(255, currentG);
+    currentB += randGauss(2 * 255 / numPixels, .25);
+    currentB = max(0, currentB);
+    currentB = min(255, currentB);
+    
+    float alpha = (float) (numPixels - i) / numPixels * 255;
+    
+    pixels[i] = color(0, currentG, currentB, alpha);
+  }
+  
+  for(int i = width + 1; i < numPixels; i++) {
+    int indexAbove = pixelAboveIndex(i);
+    float greenColor = (green(pixels[indexAbove]) + green(pixels[indexAbove - 1]) + green(pixels[indexAbove + 1]) + randGauss(2, 1)) / 3;
+    float blueColor = (blue(pixels[indexAbove]) + blue(pixels[indexAbove - 1]) + blue(pixels[indexAbove + 1]) + randGauss(3, 1)) / 3;
+    float alpha = (float) (numPixels - i) / numPixels * 255;
+    pixels[i] = color(0, greenColor, blueColor, alpha);
+  }
+  
+  // and all the lines after are going to be a sum of the previous pixels
+  updatePixels();
+}
+
+int pixelAboveIndex(int index) {
+  return index - width;
 }

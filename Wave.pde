@@ -8,7 +8,7 @@ class Wave {
   public ArrayList<WaveCrash> wavePoints;
   public float vel;
   public float maxVel;
-   float accel;
+  public float accel;
   public float accelDecreaseRate;
   public float life;
   public static final float maxLife = 100;
@@ -63,12 +63,14 @@ class Wave {
       this.wavePoints.get(i).y += this.vel + random(this.vel);
     }
     
-    // have a 5% chance that a wavelet will spawn for each row
-    for(int i = 0; i < this.wavePoints.size(); i++) {
-      if(random(100) < 1) {
-        Wavelet wavelet = new Wavelet(this.wavePoints.get(i).x);
-        wavelet.y = random(this.wavePoints.get(i).y);
-        this.wavelets.add(wavelet);
+    if(this.vel > 0) {
+      // have a 5% chance that a wavelet will spawn for each row
+      for(int i = 0; i < this.wavePoints.size(); i++) {
+        if(random(100) < 1) {
+          Wavelet wavelet = new Wavelet(this.wavePoints.get(i).x);
+          wavelet.y = random(100);
+          this.wavelets.add(wavelet);
+        }
       }
     }
     
