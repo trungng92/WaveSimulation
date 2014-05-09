@@ -37,12 +37,22 @@ class Wave {
     if(abs(this.vel) >= this.maxVel) {
       // this line just makes sure that abs(vel) is less than maxVel
       this.vel *= 1 / abs(this.vel) * this.maxVel;
+      
+      if(this.vel > 0) {
+        for(WaveCrash crash : wavePoints) {
+          crash.circleDiam += random(.1);
+        }
+      } else {
+        for(WaveCrash crash : wavePoints) {
+          crash.circleDiam -= random(.1);
+        }
+      }
     }
 
     this.vel += this.accel;
     
     for(int i = 0; i < this.wavePoints.length; i++) { 
-      this.wavePoints[i].y += this.vel;
+      this.wavePoints[i].y += this.vel + random(this.vel);
     }
     
     this.life -= random(2);

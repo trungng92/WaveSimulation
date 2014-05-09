@@ -15,16 +15,9 @@ ArrayList<Wave> waves;
 
 void setup() {
   size(400, 700);
-  frameRate(15);
+//  frameRate(60);
   
   waves = new ArrayList<Wave>();
-  waves.add(new Wave(width, randGauss(1.5, .5), 5, randGauss(.75, .25), abs(randGauss(.02, .001))));
-  waves.add(new Wave(width, randGauss(1.5, .5), 5, randGauss(.75, .25), abs(randGauss(.02, .001))));
-  
-  for(Wave wave : waves) {
-    wave.generateSinWave(random(20, 40), random(2 * PI));
-  }
-  
   outputWave = new OutputWave(width, waves);
 }
 
@@ -50,7 +43,11 @@ void draw() {
 }
 
 void mouseReleased() {
-  Wave wave = new Wave(width, randGauss(1.5, .5), 5, randGauss(.75, .25), abs(randGauss(.02, .001)));
+  float vel = randGauss(3.5, .25);
+  float accel = randGauss(.4, .05);
+  float accelRate = abs(randGauss(.02, .005));
+  System.out.println("vel: " + vel + "\naccel: " + accel + "\naccelRate: " + accelRate);
+  Wave wave = new Wave(width / 4, vel, 5, accel, accelRate);
   wave.generateSinWave(random(20, 40), random(2 * PI));
   
   waves.add(wave);
