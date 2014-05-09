@@ -4,7 +4,8 @@
   this should have a variable that says mark for removal
 **/
 class Wave {
-  public ArrayList<Wavelet> wavelets;
+//  public ArrayList<Wavelet> wavelets;
+  public Wavelet wavelet;
   public ArrayList<WaveCrash> wavePoints;
   public float vel;
   public float maxVel;
@@ -19,7 +20,8 @@ class Wave {
       this.wavePoints.add(new WaveCrash(i * width / size));
     }
     
-    this.wavelets = new ArrayList<Wavelet>();
+    this.wavelet = new Wavelet();
+    this.wavelet.init();
     
     this.vel = vel;
     this.maxVel = maxVel;
@@ -55,28 +57,12 @@ class Wave {
     }
 
     this.vel += this.accel;
-    for(Wavelet wavelet : this.wavelets) {
-      wavelet.y += this.vel + random(this.vel);
-    }
     
     for(int i = 0; i < this.wavePoints.size(); i++) { 
       this.wavePoints.get(i).y += this.vel + random(this.vel);
     }
     
-    if(this.vel > 0) {
-      // have a 5% chance that a wavelet will spawn for each row
-      for(int i = 0; i < this.wavePoints.size(); i++) {
-        if(random(100) < 1) {
-          Wavelet wavelet = new Wavelet(this.wavePoints.get(i).x);
-          wavelet.y = random(100);
-          this.wavelets.add(wavelet);
-        }
-      }
-    }
-    
-    for(Wavelet wavelet : this.wavelets) {
-      wavelet.update();
-    }
+//    this.wavelet.update();
     
     this.life -= random(2);
     this.life = max(this.life, 0);
@@ -85,13 +71,21 @@ class Wave {
   
   public void render() {
     int alpha = (int) (255 * life / maxLife);
-    for(Wavelet wavelet : this.wavelets) {
-//      wavelet.alpha = alpha;
-      wavelet.render();
+    this.wavelet.alpha = alpha;
+    this.wavelet.length = getMinWave();
+    this.wavelet.render();
+    
+    for(int i = 0; i < this.wavePoints.size(); i++) {
+      this.wavePoints.get(i).alpha = alpha;
+      this.wavePoints.get(i).render();
     }
-    for(int i = 0; i < wavePoints.size(); i++) {
-      wavePoints.get(i).alpha = alpha;
-      wavePoints.get(i).render();
+  }
+  
+  public float getMinWave() {
+    float min = this.wavePoints.get(0).y;
+    for(int i = 1; i < wavePoints.size(); i++) {
+      min = min(min, wavePoints.get(i).y);
     }
+    return min;
   }
 }
