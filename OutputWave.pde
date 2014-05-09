@@ -26,8 +26,8 @@ class OutputWave {
     for(int i = 0; i < this.outputWaves.length; i++) {
       float maxWave = 0;
       for(Wave inputWave : inputWaves) {
-        if(inputWave.wave[i] > maxWave) {
-          maxWave = inputWave.wave[i];
+        if(inputWave.wavePoints[i].y > maxWave) {
+          maxWave = inputWave.wavePoints[i].y;
           positiveVel = true;
         }
       }

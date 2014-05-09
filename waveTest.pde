@@ -35,14 +35,14 @@ void draw() {
     wave.render();
   }
   
-  outputWave.calculateOutputWave();
-  outputWave.update();
-  outputWave.render();
+//  outputWave.calculateOutputWave();
+//  outputWave.update();
+//  outputWave.render();
   
   // check if we need to remove any waves
   for(Iterator<Wave> iter = waves.iterator(); iter.hasNext();) {
     Wave waveToCheck = iter.next();
-    if(waveToCheck.wave[0] < 0 || waveToCheck.life <= 0) {
+    if(waveToCheck.wavePoints[0].y < 0 || waveToCheck.life <= 0) {
       iter.remove();
       System.out.println("removed a wave");
     }

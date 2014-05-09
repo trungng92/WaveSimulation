@@ -6,6 +6,8 @@ class WaveCrash {
   public float x;
   public float y;
   public float circleDiam;
+  public color crashColor;
+  public int alpha;
   
   public WaveCrash() {
     this(0);
@@ -15,11 +17,12 @@ class WaveCrash {
     this.x = x;
     this.y = 0;
     this.circleDiam = random(5, 20);
+    this.crashColor = color(255);
+    this.alpha = 255;
   }
   
   public void render() {
-    //fill(random(240, 256));
-    fill(255);
+    fill(crashColor, alpha);
     noStroke();
     ellipse(this.x, this.y, circleDiam, circleDiam);
   }
