@@ -2,6 +2,13 @@ import java.util.Iterator;
 // dying waves
 // gaussian distribution for wave distance
 // drawing waves?
+// have waves not dependent on size of width
+// wave crashes diameters increase as wave is going to beach
+// wave crash diameters decrease as wave is receding
+// and diameter goes to 0 when it dies
+// each wave should have white crashes
+// when a wave dies, the crash stays there, but still fades
+// sin waves should shift by approximately pi between each wave
 
 OutputWave outputWave;
 ArrayList<Wave> waves;
@@ -18,7 +25,7 @@ void setup() {
     wave.generateSinWave(random(20, 40), random(2 * PI));
   }
   
-  outputWave = new OutputWave(width);
+  outputWave = new OutputWave(width, waves);
 }
 
 void draw() {
@@ -28,7 +35,7 @@ void draw() {
     wave.render();
   }
   
-  outputWave.calculateOutputWave(waves);
+  outputWave.calculateOutputWave();
   outputWave.update();
   outputWave.render();
   
@@ -40,18 +47,6 @@ void draw() {
       System.out.println("removed a wave");
     }
   }
-}
-
-float[] calcOutputWave(ArrayList<Wave> waves) {
-  float[] outputWave = new float[waves.get(0).wave.length];
-  for(int i = 0; i < outputWave.length; i++) {
-    float max = 0;
-    for(int j = 0; j < waves.size(); j++) {
-      max = max(max, waves.get(j).wave[i]);
-    }
-    outputWave[i] = max;
-  }
-  return outputWave;
 }
 
 void mouseReleased() {

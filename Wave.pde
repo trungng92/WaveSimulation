@@ -51,7 +51,7 @@ class Wave {
     int alpha = (int) (255 * life / maxLife);
     System.out.println("alpha is " + alpha);
     stroke(0, alpha);
-    strokeWeight(4);
+    strokeWeight(2);
     for(int i = 0; i < wave.length; i++) {
       float x = i;
       float y = wave[i];

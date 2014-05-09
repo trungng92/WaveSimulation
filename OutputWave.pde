@@ -5,43 +5,49 @@
   that keeps track of which waves contribute to the overall wave?
 **/
 class OutputWave {
-  public float[] wave;
-  
-  public OutputWave(int size) {
-    wave = new float[size];
-  }
-  
-  public void calculateOutputWave(ArrayList<Wave> waves) {
-    for(int i = 0; i < this.wave.length; i++) {
-      float maxWave = 0;
-      for(Wave otherWave : waves) {
-        maxWave = max(maxWave, otherWave.wave[i]);
-      }
-      this.wave[i] = maxWave;
+  public WaveCrash[] outputWaves;
+  public ArrayList<Wave> inputWaves;
+  private float currentNoise;
+  private float crashMultiplier; // crashes should get bigger when velocity is positive
+  private boolean positiveVel; // true if the wave is going towards the beach
+  public OutputWave(int size, ArrayList<Wave> inputWaves) {
+    this.outputWaves = new WaveCrash[size];
+    for(int i = 0; i < outputWaves.length; i++) {
+      this.outputWaves[i] = new WaveCrash(i * width / outputWaves.length);
     }
+    this.crashMultiplier = 1;
+    currentNoise = 0;
+    this.inputWaves = inputWaves;
+    positiveVel = false;
   }
   
-  public void calculateOutputWave(Wave otherWave) {
-    for(int i = 0; i < otherWave.wave.length; i++) {
-      this.wave[i] = max(this.wave[i], otherWave.wave[i]);
+  public void calculateOutputWave() {
+    positiveVel = false;
+    for(int i = 0; i < this.outputWaves.length; i++) {
+      float maxWave = 0;
+      for(Wave inputWave : inputWaves) {
+        if(inputWave.wave[i] > maxWave) {
+          maxWave = inputWave.wave[i];
+          positiveVel = true;
+        }
+      }
+      this.outputWaves[i].y = maxWave;
     }
   }
   
   public void update() {
-    
+    calculateOutputWave();
+    this.crashMultiplier += (positiveVel ? .01 : -.01);
   }
   
   public void render() {
-    stroke(255, 0, 0);
-    strokeWeight(2);
     drawWave();
   }
   
   private void drawWave() {
-    for(int i = 0; i < this.wave.length; i++) {
-      float x = i;
-      float y = this.wave[i];
-      point(x, y);
+    fill(255);
+    for(int i = 0; i < this.outputWaves.length; i++) {
+      this.outputWaves[i].render();
     }
   }
 }
