@@ -10,6 +10,8 @@ import java.util.Iterator;
 // when a wave dies, the crash stays there, but still fades
 // sin waves should shift by approximately pi between each wave
 
+// gradient from top to bottom
+// alpha refreshes when a wave crash goes over it
 ArrayList<Wave> waves;
 
 void setup() {
