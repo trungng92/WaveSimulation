@@ -11,13 +11,13 @@ class Wavelet {
   public color endColor;
   public float alpha;
 
-  public Wavelet(float startY, color startColor, color endColor) {
+  public Wavelet(float startY, color startColor, color endColor, float alpha) {
     this.gradientImg = null;
     this.startY = startY;
     this.startColor = startColor;
     this.endColor = endColor;
     this.length = 0;
-    this.alpha = 255;
+    this.alpha = alpha;
   }
   
   public void init() {
@@ -27,21 +27,21 @@ class Wavelet {
     
     float startG = green(this.startColor);
     float startB = blue(this.startColor);
-    float endG = green(this.startColor);
-    float endB = blue(this.startColor);
+    float endG = green(this.endColor);
+    float endB = blue(this.endColor);
     
     // set the first line of pixels
     // this only works if gradientHeight == 2
     for(int i = 0; i < width; i++) {
-      float currentG = startG + random(50) - 25;
-      float currentB = startB + random(50) - 25;
+      float currentG = startG;// + random(50) - 25;
+      float currentB = startB;// + random(50) - 25;
       
       gradientImg.pixels[i] = color(0, currentG, currentB);
     }
     
     for(int i = width; i < 2 * width; i++) {
-      float currentG = endG + 20 + random(50) - 25;
-      float currentB = endB + 20 + random(50) - 25;
+      float currentG = endG;// + 20 + random(50) - 25;
+      float currentB = endB;// + 20 + random(50) - 25;
       
       gradientImg.pixels[i] = color(0, currentG, currentB);
     }
