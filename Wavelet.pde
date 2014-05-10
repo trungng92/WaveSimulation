@@ -30,7 +30,7 @@ class Wavelet {
     for(int i = 0; i < gradientImg.pixels.length; i++) {
       // currentG should on average start at 50 and over the course of wavePixels.length
       // subtract startingG amount (i.e. 50), so at the end, the gradient should be near 0
-      currentG += randGauss(-startingG / gradientImg.pixels.length, .5);
+      currentG += randGauss(-startingG / (2 * gradientImg.pixels.length), .5);
       currentG = max(0, currentG);
       currentG = min(255, currentG);
       // currentB should on average start at 50 and over the course of wavePixels.length

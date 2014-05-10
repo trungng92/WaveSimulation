@@ -71,7 +71,7 @@ class Wave {
   
   public void render() {
     int alpha = (int) (255 * life / maxLife);
-    this.wavelet.alpha = alpha;
+    this.wavelet.alpha = alpha * 2;
     this.wavelet.length = getMinWave();
     this.wavelet.render();
     
