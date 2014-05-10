@@ -16,7 +16,7 @@ ArrayList<Wave> waves;
 
 void setup() {
   size(400, 700);
-//  frameRate(15);
+  frameRate(5);
 //  loadPixels();
   
   waves = new ArrayList<Wave>();
@@ -26,7 +26,7 @@ void draw() {
 //  loadPixelOcean();
   background(color(204, 153, 0));
   for(Wave wave : waves) {
-    wave.update();
+    wave.update(); //<>//
     wave.render();
   }
   
