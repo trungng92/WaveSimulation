@@ -33,7 +33,11 @@ class Wave {
     this.life = this.maxLife;
   }
   
+  /**
+    The amplitude can only be a maximum the size of maxWaveletLength
+  **/
   public void generateSinWave(float amp, float offset) {
+    amp = min(maxWaveletLength, amp);
     float freq = 2 * PI / wavePoints.size();
     
     for(int i = 0; i < this.wavePoints.size(); i++) {
@@ -45,15 +49,9 @@ class Wave {
   private void addWavelet() {
     if(this.wavelets.size() > 0) {
       Wavelet lastWavelet = this.wavelets.get(this.wavelets.size() - 1);
-//      System.out.println("LAST WAVELET LENGTH " + lastWavelet.length);
-//      System.out.println("CHECK SIZE " + this.wavelets.size());
-//      System.out.println("CHECK WAVELET SIZE " + (this.wavelets.size() * this.maxWaveletLength));
-//      System.out.println("CHECK MAX WAVE " + getMaxWave());
       if(getMaxWave() - this.wavelets.size() * this.maxWaveletLength > 0) {
-  //    if(getMaxWave() - ((this.wavelets.size() - 1) * this.maxWaveletLength + lastWavelet.length) > 0) {
         lastWavelet.length = this.maxWaveletLength;
         float startY = this.wavelets.size() * this.maxWaveletLength;
-  //      System.out.println("starting at " + startY);
         color startColor = lastWavelet.endColor;
         // how to calculate endColor?
         color endColor = color(0, green(startColor) + 20, blue(startColor) + 20);
@@ -61,7 +59,6 @@ class Wave {
         Wavelet newWavelet = new Wavelet(startY, startColor, endColor, alpha);
         newWavelet.init();
         newWavelet.length = getMaxWave() - (this.wavelets.size()) * this.maxWaveletLength;
-//        System.out.println("NEW WAVELET LENGTH " + newWavelet.length);
         this.wavelets.add(newWavelet);
       }
     }
@@ -70,8 +67,6 @@ class Wave {
   private void removeWavelet() {
     if(this.vel < 0 && this.wavelets.size() > 0) {
       Wavelet lastWavelet = this.wavelets.get(this.wavelets.size() - 1);
-//      System.out.println("CHECK REMOVE MAX " + getMaxWave());
-//      System.out.println("CHECK REMOVE WAVELET SIZE " + ((this.wavelets.size() - 1) * this.maxWaveletLength));
       if(getMaxWave() - ((this.wavelets.size() - 1) * this.maxWaveletLength) < 0) {
         this.wavelets.remove(this.wavelets.size() - 1);
       }
@@ -84,15 +79,12 @@ class Wave {
       lastWavelet.length = getMaxWave() - (this.wavelets.size() - 1) * this.maxWaveletLength;
       lastWavelet.length = min(this.maxWaveletLength, lastWavelet.length);
       lastWavelet.length = max(0, lastWavelet.length);
-//      System.out.println("MAX WAVE " + getMaxWave());
-//      System.out.println("WAVELET LENGTH " + ((this.wavelets.size() - 1) * this.maxWaveletLength));
-//      System.out.println("Last wavelet length " + lastWavelet.length);
     }
   }
   
   public void update() {
     this.accel -= this.accelDecreaseRate;
-    if(abs(this.vel) >= this.maxVel) { //<>//
+    if(abs(this.vel) >= this.maxVel) {
       // this line just makes sure that abs(vel) is less than maxVel
       this.vel *= 1 / abs(this.vel) * this.maxVel;
       
@@ -119,11 +111,11 @@ class Wave {
     
     // right now since update only affects alpha
     // i only want the fade to affect when waves are receding
-    if(this.vel < 0) {
-      for(Wavelet wavelet : wavelets) {
-        wavelet.update();
-      }
-    }
+//    if(this.vel < 0) {
+//      for(Wavelet wavelet : wavelets) {
+//        wavelet.update();
+//      }
+//    }
         
     this.life -= random(2);
     this.life = max(this.life, 0);
@@ -131,10 +123,13 @@ class Wave {
   
   public void render() {
     int alpha = (int) (255 * life / maxLife);
-//    this.wavelets.alpha = alpha * 2;
-//    this.wavelet.length = getMinWave();
+    // maybe change alpha for 20% of each wavelet on each iteration?
+    // maybe using the fisher yates shuffle
+    float counter = 1;
     for(Wavelet wavelet : wavelets) {
+      wavelet.alpha = alpha * 2 * counter;
       wavelet.render();
+      counter *= .8;
     }
     
     for(int i = 0; i < this.wavePoints.size(); i++) {

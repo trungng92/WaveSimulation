@@ -12,18 +12,19 @@ import java.util.Iterator;
 
 // gradient from top to bottom
 // alpha refreshes when a wave crash goes over it
+
+// no need for each wave to redraw the wavelets
+// the wavelets should only be drawn once
 ArrayList<Wave> waves;
 
 void setup() {
   size(400, 700);
-//  frameRate(5);
-//  loadPixels();
+//  frameRate(10);
   
   waves = new ArrayList<Wave>();
 }
 
 void draw() {
-//  loadPixelOcean();
   background(color(204, 153, 0));
   for(Wave wave : waves) {
     wave.update();
@@ -38,6 +39,7 @@ void draw() {
       System.out.println("removed a wave");
     }
   }
+  System.out.println("Frame rate " + frameRate + ", wavecount: " + waves.size());
 }
 
 void mouseReleased() {
