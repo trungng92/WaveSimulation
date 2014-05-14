@@ -5,7 +5,6 @@
 **/
 class Wave {
   public ArrayList<Wavelet> wavelets;
-//  public Wavelet wavelet;
   public ArrayList<WaveCrash> wavePoints;
   public float vel;
   public float maxVel;
@@ -55,7 +54,8 @@ class Wave {
         color startColor = lastWavelet.endColor;
         // how to calculate endColor?
         color endColor = color(0, green(startColor) + 20, blue(startColor) + 20);
-        float alpha = lastWavelet.alpha * 92 / 100;
+        float alpha = lastWavelet.alpha * 92 / 100; // TODO DON'T NEED ALPHA ANYMORE? BECAUSE IT CORRESPONDS WITH THE WAVELETS.UPDATE()
+        // WHICH IS COMMENTED
         Wavelet newWavelet = new Wavelet(startY, startColor, endColor, alpha);
         newWavelet.init();
         newWavelet.length = getMaxWave() - (this.wavelets.size()) * this.maxWaveletLength;
@@ -90,11 +90,15 @@ class Wave {
       
       if(this.vel > 0) {
         for(WaveCrash crash : wavePoints) {
-          crash.circleDiam += random(.1);
+          // not sure if linear growth looks better
+          // or exponential growth
+          crash.circleDiam += random(.2);
+//          crash.circleDiam *= random(1, 1.05);
         }
       } else {
         for(WaveCrash crash : wavePoints) {
-          crash.circleDiam -= random(.1);
+          crash.circleDiam -= random(.2);
+//            crash.circleDiam *= random(.95, 1);
         }
       }
     }

@@ -1,13 +1,5 @@
 import java.util.Iterator;
-// dying waves
-// gaussian distribution for wave distance
-// drawing waves?
 // have waves not dependent on size of width
-// wave crashes diameters increase as wave is going to beach
-// wave crash diameters decrease as wave is receding
-// and diameter goes to 0 when it dies
-// each wave should have white crashes
-// when a wave dies, the crash stays there, but still fades
 // sin waves should shift by approximately pi between each wave
 
 // gradient from top to bottom
