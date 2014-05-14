@@ -65,14 +65,14 @@ class Wavelet {
     // set the first line of pixels
     // this only works if gradientHeight == 2
     for(int i = 0; i < this.gradWidth; i++) {
-      float currentG = green(prev.gradientImg.pixels[i + this.gradWidth]);
-      float currentB = blue(prev.gradientImg.pixels[i + this.gradWidth]);
+      float currentG = green(prev.gradientImg.pixels[i + this.gradWidth]) + random(4) - 2;
+      float currentB = blue(prev.gradientImg.pixels[i + this.gradWidth]) + random(4) - 2;
       
       this.gradientImg.pixels[i] = color(0, currentG, currentB);
     }
     
     for(int i = this.gradWidth; i < 2 * this.gradWidth; i++) {
-      float currentG = endG + noise(i) * 10;//random(20) - 10;
+      float currentG = endG + noise(i * 2) * 10;//random(20) - 10;
       float currentB = endB + noise(i) * 10;//random(20) - 10;
       
       this.gradientImg.pixels[i] = color(0, currentG, currentB);
