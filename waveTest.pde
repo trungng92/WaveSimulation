@@ -7,10 +7,15 @@ import java.util.Iterator;
 
 // no need for each wave to redraw the wavelets
 // the wavelets should only be drawn once
+
+// If the wave were to hit an object,
+// there would be no way for it to account for going around something
+// or parts of the wave being blocked, e.g. by a sand castle wall.
+// If I were to redo this, I would want to make it tile based
 ArrayList<Wave> waves;
 
 void setup() {
-  size(400, 700);
+  size(800, 600);
 //  frameRate(10);
   
   waves = new ArrayList<Wave>();
@@ -41,6 +46,7 @@ void mouseReleased() {
   System.out.println("vel: " + vel + "\naccel: " + accel + "\naccelRate: " + accelRate);
   Wave wave = new Wave(width / 4, vel, 5, accel, accelRate);
   wave.generateSinWave(random(20, 40), random(2 * PI));
+  wave.generateCrashWavelet();
   
   waves.add(wave);
 }

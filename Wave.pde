@@ -6,6 +6,8 @@
 class Wave {
   public ArrayList<Wavelet> wavelets;
   public ArrayList<WaveCrash> wavePoints;
+  public PImage crashWaveletImg;
+  public float amp;
   public float vel;
   public float maxVel;
   public float accel;
@@ -21,34 +23,64 @@ class Wave {
     }
     
     this.wavelets = new ArrayList<Wavelet>();
-    Wavelet firstWavelet = new Wavelet(0, color(0, 80, 80), color(0, 100, 100), 255); 
+    Wavelet firstWavelet = new Wavelet(size, 0, color(0, 80, 80), color(0, 100, 100), 255); 
     firstWavelet.init();
     this.wavelets.add(firstWavelet);   
+    
+    this.crashWaveletImg = null;
     
     this.vel = vel;
     this.maxVel = maxVel;
     this.accel = accel;
     this.accelDecreaseRate = accelDecreaseRate;
     this.life = this.maxLife;
+    this.amp = 0;
+  }
+  
+  /**
+    A bit of a misnomer because it doesn't actually Wavelet
+    but it creates something very similar to a wavelet.
+    It's just a PImage to display the last wavelet.
+    
+    The reason why I can't just have an alpha over the last wavelet
+    is because the wavecrash could be in parts of multiple wavelets,
+    and because the wavelet changes size, I would also have to constantly
+    change the size of the alpha image to match with the Wavelet PImage
+  **/
+  public void generateCrashWavelet() {
+    // multiply amp by 2 because when we generate the sin wave
+    // we actually do amp * (1.2 + sin()). So the total amplitude is actually 2.2 * amp
+    this.crashWaveletImg = new PImage(this.wavePoints.size(), (int) (this.amp * 2.2), ARGB);
+    this.crashWaveletImg.loadPixels();
+    for(int i = 0; i < this.wavePoints.size(); i++) {
+      // find the wave crash for each column, and all the pixels above the wave crash
+      // set to white, all below the wave crash, set to transparent
+      int waveCrashLength = (int) this.wavePoints.get(i).y;
+      for(int j = 0; j < waveCrashLength; j++) {
+        this.crashWaveletImg.set(i, j, color(0, 200, 200));
+      }
+    }
+    this.crashWaveletImg.updatePixels();
   }
   
   /**
     The amplitude can only be a maximum the size of maxWaveletLength
   **/
   public void generateSinWave(float amp, float offset) {
-    amp = min(maxWaveletLength, amp);
+    this.amp = min(maxWaveletLength, amp);
     float freq = 2 * PI / wavePoints.size();
     
     for(int i = 0; i < this.wavePoints.size(); i++) {
       // make sure that all the parts of the wave are positive
-      this.wavePoints.get(i).y = amp * (1 + sin(freq * i + offset));
+      // the 1.2 guarantees that there is the wavecrash in all parts
+      this.wavePoints.get(i).y = this.amp * (1.2 + sin(freq * i + offset));
     }
   }
   
   private void addWavelet() {
     if(this.wavelets.size() > 0) {
       Wavelet lastWavelet = this.wavelets.get(this.wavelets.size() - 1);
-      if(getMaxWave() - this.wavelets.size() * this.maxWaveletLength > 0) {
+      if(getMinWave() - this.wavelets.size() * this.maxWaveletLength > 0) {
         lastWavelet.length = this.maxWaveletLength;
         float startY = this.wavelets.size() * this.maxWaveletLength;
         color startColor = lastWavelet.endColor;
@@ -56,9 +88,12 @@ class Wave {
         color endColor = color(0, green(startColor) + 20, blue(startColor) + 20);
         float alpha = lastWavelet.alpha * 92 / 100; // TODO DON'T NEED ALPHA ANYMORE? BECAUSE IT CORRESPONDS WITH THE WAVELETS.UPDATE()
         // WHICH IS COMMENTED
-        Wavelet newWavelet = new Wavelet(startY, startColor, endColor, alpha);
-        newWavelet.init();
-        newWavelet.length = getMaxWave() - (this.wavelets.size()) * this.maxWaveletLength;
+        
+        // you can change the number of points the wavelets use with the first parameter
+        // but you also have to change the first wave in the constructor
+        Wavelet newWavelet = new Wavelet(this.wavePoints.size(), startY, startColor, endColor, alpha);
+        newWavelet.init(lastWavelet);
+        newWavelet.length = getMinWave() - (this.wavelets.size()) * this.maxWaveletLength;
         this.wavelets.add(newWavelet);
       }
     }
@@ -67,7 +102,7 @@ class Wave {
   private void removeWavelet() {
     if(this.vel < 0 && this.wavelets.size() > 0) {
       Wavelet lastWavelet = this.wavelets.get(this.wavelets.size() - 1);
-      if(getMaxWave() - ((this.wavelets.size() - 1) * this.maxWaveletLength) < 0) {
+      if(getMinWave() - ((this.wavelets.size() - 1) * this.maxWaveletLength) < 0) {
         this.wavelets.remove(this.wavelets.size() - 1);
       }
     }
@@ -75,8 +110,8 @@ class Wave {
   
   private void updateLastWavelet() {
     if(this.wavelets.size() > 0) {
-      Wavelet lastWavelet = this.wavelets.get(this.wavelets.size() - 1); //<>//
-      lastWavelet.length = getMaxWave() - (this.wavelets.size() - 1) * this.maxWaveletLength;
+      Wavelet lastWavelet = this.wavelets.get(this.wavelets.size() - 1);
+      lastWavelet.length = getMinWave() - (this.wavelets.size() - 1) * this.maxWaveletLength;
       lastWavelet.length = min(this.maxWaveletLength, lastWavelet.length);
       lastWavelet.length = max(0, lastWavelet.length);
     }
@@ -131,9 +166,19 @@ class Wave {
     // maybe using the fisher yates shuffle
     float counter = 1;
     for(Wavelet wavelet : wavelets) {
-      wavelet.alpha = alpha * 2 * counter;
+      wavelet.alpha = alpha * 4 * counter;
       wavelet.render();
-      counter *= .8;
+      counter *= .9;
+    }
+    
+    if(this.wavelets.size() > 0) {
+      float crashWaveletY = (this.wavelets.size() - 1) * this.maxWaveletLength +
+        this.wavelets.get(this.wavelets.size() - 1).length;
+      tint(color(255, (this.wavelets.size() + 8) * 20, (this.wavelets.size() + 8) * 20), alpha * 4 * counter);
+//      Wavelet lastWavelet = this.wavelets.get(this.wavelets.size() - 1);
+//      crashWaveletImg.blend(lastWavelet.gradientImg, 0, (int) lastWavelet.startY, (int) lastWavelet.gradWidth, (int) lastWavelet.length, 
+//        0, (int) crashWaveletY, this.wavePoints.size(), (int) (this.amp * 2.2), BLEND);
+      image(crashWaveletImg, 0, crashWaveletY, width, this.amp * 2.2);
     }
     
     for(int i = 0; i < this.wavePoints.size(); i++) {
