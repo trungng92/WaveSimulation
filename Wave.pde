@@ -63,18 +63,20 @@ class Wave {
       this.wavePoints.get(i).y += this.vel + random(this.vel);
     }
     
-    // have a 5% chance that a wavelet will spawn for each row
-    for(int i = 0; i < this.wavePoints.size(); i++) {
-      if(random(100) < 1) {
-        Wavelet wavelet = new Wavelet(this.wavePoints.get(i).x);
-        wavelet.y = random(this.wavePoints.get(i).y);
-        this.wavelets.add(wavelet);
+    if(this.vel > 0) {
+      // have a 5% chance that a wavelet will spawn for each row
+      for(int i = (int) random(5); i < this.wavePoints.size(); i += 5) {
+        if(random(100) < 7.5) {
+          Wavelet wavelet = new Wavelet(this.wavePoints.get(i).x);
+          wavelet.y = 0;
+          this.wavelets.add(wavelet);
+        }
       }
     }
     
-    for(Wavelet wavelet : this.wavelets) {
-      wavelet.update();
-    }
+//    for(Wavelet wavelet : this.wavelets) {
+//      wavelet.update();
+//    }
     
     this.life -= random(2);
     this.life = max(this.life, 0);
@@ -83,9 +85,11 @@ class Wave {
   
   public void render() {
     int alpha = (int) (255 * life / maxLife);
+    float counter = .5;
     for(Wavelet wavelet : this.wavelets) {
-//      wavelet.alpha = alpha;
+      wavelet.alpha = alpha * counter;
       wavelet.render();
+      counter *= 1.1;
     }
     for(int i = 0; i < wavePoints.size(); i++) {
       wavePoints.get(i).alpha = alpha;
