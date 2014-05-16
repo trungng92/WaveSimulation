@@ -12,6 +12,7 @@ import java.util.Iterator;
 // there would be no way for it to account for going around something
 // or parts of the wave being blocked, e.g. by a sand castle wall.
 // If I were to redo this, I would want to make it tile based
+
 ArrayList<Wave> waves;
 
 void setup() {
