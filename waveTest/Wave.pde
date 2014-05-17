@@ -46,6 +46,9 @@ class Wave {
     is because the wavecrash could be in parts of multiple wavelets,
     and because the wavelet changes size, I would also have to constantly
     change the size of the alpha image to match with the Wavelet PImage
+    
+    WHAT I COULD DO is must have a linear interp like i do for the wavelet
+    and this should create the mask that i'll use to cover it
   **/
   public void generateCrashWavelet() {
     // multiply amp by 2 because when we generate the sin wave
@@ -57,7 +60,7 @@ class Wave {
       // set to white, all below the wave crash, set to transparent
       int waveCrashLength = (int) this.wavePoints.get(i).y;
       for(int j = 0; j < waveCrashLength; j++) {
-        this.crashWaveletImg.set(i, j, color(0, 200, 200));
+        this.crashWaveletImg.set(i, j, color(0, 175 + j, 175 + j));
       }
     }
     this.crashWaveletImg.updatePixels();
@@ -166,7 +169,7 @@ class Wave {
     // maybe using the fisher yates shuffle
     float counter = 1;
     for(Wavelet wavelet : wavelets) {
-      wavelet.alpha = alpha * 4 * counter;
+      wavelet.alpha = min(255, alpha * 4 * counter);
       wavelet.render();
       counter *= .9;
     }
@@ -174,7 +177,7 @@ class Wave {
     if(this.wavelets.size() > 0) {
       float crashWaveletY = (this.wavelets.size() - 1) * this.maxWaveletLength +
         this.wavelets.get(this.wavelets.size() - 1).length;
-      tint(color(255, (this.wavelets.size() + 8) * 20, (this.wavelets.size() + 8) * 20), alpha * 4 * counter);
+      tint(color(255, (this.wavelets.size() + 8) * 20, (this.wavelets.size() + 8) * 20), min(255, alpha * 4 * counter));
 //      Wavelet lastWavelet = this.wavelets.get(this.wavelets.size() - 1);
 //      crashWaveletImg.blend(lastWavelet.gradientImg, 0, (int) lastWavelet.startY, (int) lastWavelet.gradWidth, (int) lastWavelet.length, 
 //        0, (int) crashWaveletY, this.wavePoints.size(), (int) (this.amp * 2.2), BLEND);
