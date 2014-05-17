@@ -85,11 +85,9 @@ class Wave {
   
   public void render() {
     int alpha = (int) (255 * life / maxLife);
-    float counter = .5;
     for(Wavelet wavelet : this.wavelets) {
-      wavelet.alpha = alpha * counter;
+      wavelet.alpha = min(255, alpha);
       wavelet.render();
-      counter *= 1.1;
     }
     for(int i = 0; i < wavePoints.size(); i++) {
       wavePoints.get(i).alpha = alpha;
